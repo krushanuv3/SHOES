@@ -3,8 +3,14 @@ from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from .models import SHOES_TABLE, LOGIN_TABLE, CONTACT_TABLE, CART_TABLE , BRAND_TABLE, CATEGORY_TABLE, ORDER_TABLE
 from django.db.models import Sum
+from django.views.decorators.csrf import csrf_exempt
+
 #import paginator
-from django.core.paginator import Paginator
+from django.core.paginator import (
+    Paginator,
+    EmptyPage,
+    PageNotAnInteger,
+)
 
 # Create your views here.
 def index(request):
@@ -24,8 +30,29 @@ def index(request):
 def Men(request):
     menprodview = SHOES_TABLE.objects.filter(CATEGORY_ID=1)
     print(menprodview)
+
+    default_page = 1
+    page = request.GET.get('page', default_page)
+
+    # Get queryset of items to paginate
+    items = SHOES_TABLE.objects.filter(CATEGORY_ID=1)
+
+    # Paginate items
+    items_per_page = 4
+    paginator = Paginator(items, items_per_page)
+
+    try:
+        items_page = paginator.page(page)
+    except PageNotAnInteger:
+        items_page = paginator.page(default_page)
+    except EmptyPage:
+        items_page = paginator.page(paginator.num_pages)
+
+    # Provide filtered, paginated library items
+
     productview = {
-        'menprodview': menprodview
+        'menprodview': menprodview,
+        'items_page': items_page
     }
 
     return render(request, 'men.html',productview)
@@ -33,17 +60,53 @@ def Men(request):
 def Women(request):
     womenprodview = SHOES_TABLE.objects.filter(CATEGORY_ID=2)
     print(womenprodview)
+
+    default_page = 1
+    page = request.GET.get('page', default_page)
+
+    # Get queryset of items to paginate
+    items = SHOES_TABLE.objects.filter(CATEGORY_ID=2)
+
+    # Paginate items
+    items_per_page = 4
+    paginator = Paginator(items, items_per_page)
+
+    try:
+        items_page = paginator.page(page)
+    except PageNotAnInteger:
+        items_page = paginator.page(default_page)
+    except EmptyPage:
+        items_page = paginator.page(paginator.num_pages)
+
     productview = {
-        'womenprodview': womenprodview
+        'womenprodview': womenprodview,
+        'items_page': items_page
     }
+
     return render(request, 'women.html', productview)
 
 def Shopall(request):
-    product = SHOES_TABLE.objects.all()
 
+
+    default_page = 1
+    page = request.GET.get('page', default_page)
+
+    # Get queryset of items to paginate
+    items = SHOES_TABLE.objects.all()
+
+    # Paginate items
+    items_per_page = 8
+    paginator = Paginator(items, items_per_page)
+
+    try:
+        items_page = paginator.page(page)
+    except PageNotAnInteger:
+        items_page = paginator.page(default_page)
+    except EmptyPage:
+        items_page = paginator.page(paginator.num_pages)
 
     productview = {
-        'product': product,
+        'items_page': items_page,
 
     }
     return render(request, 'shopall.html', productview)
@@ -130,6 +193,18 @@ def OrderComplete(request):
             object.ORDER_STATUS = 1
             object.save()
 
+        # param_dict = {
+        #
+        #     'MID': 'WorldP64425807474247',
+        #     'ORDER_ID': 'ORDER_TABLE.id',
+        #     'TXN_AMOUNT': '1',
+        #     'CUST_ID': 'email',
+        #     'INDUSTRY_TYPE_ID': 'Retail',
+        #     'WEBSITE': 'WEBSTAGING',
+        #     'CHANNEL_ID': 'WEB',
+        #     'CALLBACK_URL': 'http://127.0.0.1:8000/handlepayment/',
+        #
+        # }
 
     return render(request, 'order-complete.html')
 
@@ -294,6 +369,10 @@ def YourOrders(request):
 
     return render(request, 'yourorders.html', preview)
 
+# @csrf_exempt
+# def handlerequest(request):
+#     # paytm will send you post request here
+#     pass
 
 
 

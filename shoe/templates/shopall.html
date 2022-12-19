@@ -70,17 +70,18 @@
 					</div>
 				</div>
 				<div class="row row-pb-md">
-					{% for i in product %}
+					{% if items_page %}
+					{% for item in items_page %}
 
 					<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 					<div class="col-lg-3 mb-4">
 						<div class="product-entry border">
-							<a href="/product/{{i.id}}" class="prod-img">
-								<img src="/media/{{i.SHOE_PHOTO}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
+							<a href="/product/{{item.id}}" class="prod-img">
+								<img src="/media/{{item.SHOE_PHOTO}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
 							</a>
 							<div class="desc">
-								<h2><a href="/product/{{i.id}}">{{i.NAME}}</a></h2>
-								<span class="price">&#8377; {{i.PRICE}}</span>
+								<h2><a href="/product/{{i.id}}">{{item.NAME}}</a></h2>
+								<span class="price">&#8377; {{item.PRICE}}</span>
 							</div>
 						</div>
 					</div>
@@ -90,6 +91,39 @@
 
 				</div>
 
+				<div class="row">
+					<div class="col-md-12 text-center">
+						<div class="block-27">
+
+    {% if items_page.has_other_pages %}
+    <div class="btn-group" role="group" aria-label="Item pagination">
+        {% if items_page.has_previous %}
+            <a href="?page={{ items_page.previous_page_number }}" class="btn btn-outline-primary">&laquo;</a>
+        {% endif %}
+
+        {% for page_number in items_page.paginator.page_range %}
+            {% if items_page.number == page_number %}
+                <button class="btn btn-outline-primary active">
+                    <span>{{ page_number }} <span class="sr-only">(current)</span></span>
+                </button>
+            {% else %}
+                <a href="?page={{ page_number }}" class="btn btn-outline-primary">
+                    {{ page_number }}
+                </a>
+            {% endif %}
+        {% endfor %}
+
+        {% if items_page.has_next %}
+            <a href="?page={{ items_page.next_page_number }}" class="btn btn-outline-primary">&raquo;</a>
+        {% endif %}
+    </div>
+    {% endif %}
+{% else %}
+    <p>No items found.</p>
+{% endif %}
+		            </div>
+					</div>
+				</div>
 			</div>
 		</div>
 

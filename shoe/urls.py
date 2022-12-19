@@ -19,6 +19,7 @@ urlpatterns = [
     path("product/<int:myid>", views.productView, name="ProductDetail"),
     path("cart", views.Cart, name="ShoeCart"),
     path("checkout", views.Checkout, name="ShoeCheckout"),
+    # path("handlerequest", views.handlerequest, name="handlerequest"),
     path("order-complete", views.OrderComplete, name="OrderComplete"),
     path("add-to-wishlist", views.AddToWishlist, name="AddToWishlist"),
     path("addtocart", views.AddToCart, name="AddToCart"),

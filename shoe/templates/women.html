@@ -36,39 +36,58 @@
 		<div class="colorlib-product">
 			<div class="container">
 				<div class="row">
+					</div>
 
-					<div class="col-lg-9 col-xl-9">
+
 						<div class="row row-pb-md">
-							{% for w in womenprodview %}
-							<div class="col-lg-4 mb-4 text-center">
+							{% if items_page %}
+							{% for item in items_page %}
+							<div class="col-md-3 col-lg-3 mb-4 text-center">
 								<div class="product-entry border">
-									<a href="/product/{{w.id}}" class="prod-img">
-										<img src="/media/{{w.SHOE_PHOTO}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
+									<a href="/product/{{item.id}}" class="prod-img">
+										<img src="/media/{{item.SHOE_PHOTO}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
 									</a>
 									<div class="desc">
-										<h2><a href="/product/{{w.id}}">{{w.NAME}}</a></h2>
-										<span class="price">&#8377; {{w.PRICE}}</span>
+										<h2><a href="/product/{{item.id}}">{{item.NAME}}</a></h2>
+										<span class="price">&#8377; {{item.PRICE}}</span>
 									</div>
 								</div>
 							</div>
-						{% endfor %}
+							{% endfor %}
 						</div>
 						<div class="row">
 							<div class="col-md-12 text-center">
 								<div class="block-27">
-				               <ul>
-					               <li><a href="#"><i class="ion-ios-arrow-back"></i></a></li>
-				                  <li class="active"><span>1</span></li>
-				                  <li><a href="#">2</a></li>
-				                  <li><a href="#">3</a></li>
-				                  <li><a href="#">4</a></li>
-				                  <li><a href="#">5</a></li>
-				                  <li><a href="#"><i class="ion-ios-arrow-forward"></i></a></li>
-				               </ul>
+				               {% if items_page.has_other_pages %}
+    <div class="btn-group" role="group" aria-label="Item pagination">
+        {% if items_page.has_previous %}
+            <a href="?page={{ items_page.previous_page_number }}" class="btn btn-outline-primary">&laquo;</a>
+        {% endif %}
+
+        {% for page_number in items_page.paginator.page_range %}
+            {% if items_page.number == page_number %}
+                <button class="btn btn-outline-primary active">
+                    <span>{{ page_number }} <span class="sr-only">(current)</span></span>
+                </button>
+            {% else %}
+                <a href="?page={{ page_number }}" class="btn btn-outline-primary">
+                    {{ page_number }}
+                </a>
+            {% endif %}
+        {% endfor %}
+
+        {% if items_page.has_next %}
+            <a href="?page={{ items_page.next_page_number }}" class="btn btn-outline-primary">&raquo;</a>
+        {% endif %}
+    </div>
+    {% endif %}
+{% else %}
+    <p>No items found.</p>
+{% endif %}
 				            </div>
 							</div>
 						</div>
-					</div>
+
 				</div>
 			</div>
 		</div>
