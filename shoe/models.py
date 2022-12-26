@@ -103,5 +103,5 @@ class CONTACT_TABLE(models.Model):
 class FEEDBACK(models.Model):
     L_ID = models.ForeignKey(LOGIN_TABLE, on_delete=models.CASCADE, default="")
     RATINGS = models.CharField(max_length=300)
-    COMMENT = models.CharField(max_length=300)
+    COMMENT = models.CharField(max_length=300, default="")
 

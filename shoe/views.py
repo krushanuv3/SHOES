@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
-from .models import SHOES_TABLE, LOGIN_TABLE, CONTACT_TABLE, CART_TABLE , BRAND_TABLE, CATEGORY_TABLE, ORDER_TABLE
+from .models import SHOES_TABLE, LOGIN_TABLE, CONTACT_TABLE, CART_TABLE , BRAND_TABLE, CATEGORY_TABLE, ORDER_TABLE, FEEDBACK
 from django.db.models import Sum
 from django.views.decorators.csrf import csrf_exempt
 
@@ -156,7 +156,8 @@ def Cart(request):
     return render(request, 'cart.html',cartview)
 
 def Checkout(request):
-    carttotal = CART_TABLE.objects.aggregate(Sum("FINAL_PRICE"))
+    uid = request.session['log_id']
+    carttotal = CART_TABLE.objects.filter(L_ID=uid, ORDER_STATUS=0).aggregate(Sum("FINAL_PRICE"))
     carttotal = carttotal.get("FINAL_PRICE__sum")
     uid = request.session['log_id']
     print(uid)
@@ -359,6 +360,8 @@ def RemoveFromCart(request, did):
     return render(request, 'cart.html',context)
 
 
+
+
 def YourOrders(request):
     uid = request.session['log_id']
     yourorder = ORDER_TABLE.objects.filter(L_ID=uid)
@@ -374,5 +377,16 @@ def YourOrders(request):
 #     # paytm will send you post request here
 #     pass
 
+def SubmitReview(request):
+    uid = request.session['log_id']
+    if request.method == 'POST':
+        ratings = request.POST.get("input-1")
+        feedback = request.POST.get("feedback")
+        print(ratings)
+        print(feedback)
+        subreview = FEEDBACK(L_ID=LOGIN_TABLE(id=uid), RATINGS=ratings, COMMENT=feedback)
+        subreview.save()
+
+    return redirect(index)
 
 
